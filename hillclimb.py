@@ -1,4 +1,8 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+
 import random
+from helps.help import matrixGenerateValues as mRan
 
 class HillClimb:
 
@@ -41,10 +45,11 @@ class HillClimb:
 
     def getNeighbours(self,solution):
         neighbours = []
+        #criação de um vizinho apartir da lista de solução
         for i in range(len(solution)):
             for j in range(i + 1, len(solution)):
-                #criação de um vizinho apartir da lista de solução
-                neighbour = solution.copy()
+                #criando uma cópia da lista de solução para fazer a troca 
+                neighbour = solution[:]
                 #troca das posições do vizinho  
                 neighbour[i] = solution[j]
                 neighbour[j] = solution[i]
@@ -82,12 +87,14 @@ class HillClimb:
 #teste
 if __name__=="__main__":
 
-    route = [
-        [0, 800, 500, 300],
-        [800, 0, 200, 500],
-        [500, 200, 0, 600],
-        [300, 500, 600, 0]
-    ]
+    # route = [
+    #     [0, 800, 500, 300],
+    #     [800, 0, 200, 500],
+    #     [500, 200, 0, 600],
+    #     [300, 500, 600, 0]
+    # ]
+    #gerando uma matriz randomica 
+    route = mRan(10,100,800)
 
     hc = HillClimb(route)
     hc.hillClimbSolution()
