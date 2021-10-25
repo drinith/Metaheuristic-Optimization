@@ -15,7 +15,7 @@ class HillClimb:
     def __init__(self,routeEx):
         self.route = routeEx
 
-
+    
     #soluções randomicas
     def randomSolution(self,route):
         
@@ -94,9 +94,9 @@ if __name__=="__main__":
     #     [300, 500, 600, 0]
     # ]
     #gerando uma matriz randomica 
-    route = mRan(10,100,800)
+    routeMatrix = mRan(10,100,800)
 
-    hc = HillClimb(route)
+    hc = HillClimb(routeMatrix)
     hc.hillClimbSolution()
    
     print('fim')
