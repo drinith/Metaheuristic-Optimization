@@ -22,8 +22,8 @@ class CaixeiroViajante ():
         
                 
         #2. Adiciona-se a cidade de origem à rota
-        #cidade = random.randint(0,len(rotasMatriz)-1)
-        cidade =3
+        cidade = random.randint(0,len(rotasMatriz)-1)
+        #cidade =3
 
         #dizer que o indice daquela cidade foi visitado
         cidadeVisitada[cidade]="visitada"
