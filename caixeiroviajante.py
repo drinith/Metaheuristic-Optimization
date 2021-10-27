@@ -4,7 +4,7 @@ import random
 from helps.help import matrixGenerateValues as mRan
 
 ##################################
-# Problema do caixeiro viajante usando metaheuristica. Nesse Problema
+# Problema do caixeiro viajante usando metaheuristica. Neste Problema
 # as rotas serão representadas por uma matriz onde os pontos da rota 
 # são os indices e os valores as distancias da combinação dos inidices
 # de linha com coluna.
@@ -20,7 +20,7 @@ class CaixeiroViajante ():
 
         for i in range(qtCidades):#for em cima da dimensão da matriz
             #gerar o valor da cidade para a solução aleatoria
-            cidadeRandomica = random.randint(0, len( listaIndicesCidade) - 1)
+            cidadeRandomica = random.randint(0, len( listaIndicesCidade )-1)
             #adicionar o código da cidade dentro da solução
             rotaRandomica.append(cidadeRandomica)
             #remover o código da cidade para ele não entrar mais na solução
@@ -33,7 +33,7 @@ class CaixeiroViajante ():
 
         #buscando uma rota possível com valores de cidades determinado
         rota = self.algoritmoRotaAleatoria(qtCidades,rotasMatriz)
-        
+      
         #teste
         # rota = [0,1,2]
         
@@ -43,23 +43,47 @@ class CaixeiroViajante ():
         #cidades não visitadas
         cidadeNaoVisitadas = list(set(listaIndicesCidade) - set(rota))
         
-        #caminhar em cada passo da rota gerada e pegar os calores dos pesos dos vertices e comparar com uma possivel entrada
-        for i in range(len(rota)-1):
+        print('Rota inicial ')
+        print(rota)
+
+        #inserir todas as cidades
+        while(len(rota)!=len(rotasMatriz)):
+            maiorVertice = 0
+            #caminhar em cada passo da rota gerada e selecionar o caminho mais pesado e substituir aleatoriamente por uma cidade e religar os caminhos
+            for i in range(len(rota)):
             
-            #pegar valor do vertice atual
-            valorVertice = rotasMatriz[rota[i]][rota[i+1]]
+                #chegando na última cidade do range olhar o vertice dela com inicio 
+                if(i!=len(rota)-1):
+                    #pegar valor do vertice atual
+                    valorVertice = rotasMatriz[rota[i]][rota[i+1]]
+                else:
+                    #pegar o valor do caminho formado entre a ultima cidade com a primeira
+                    valorVertice = rotasMatriz[rota[i]][rota[0]] 
+                #pegar o valor de maior caminho
+                if(maiorVertice < valorVertice):
+                    maiorVertice = valorVertice
+                    posicao = i
+
+            #pegar uma cidade que não estava adicionada a rota
+            indiceCidade = random.randint(0,len(cidadeNaoVisitadas)-1)
+            cidadeRandomicaNaoVisitada = cidadeNaoVisitadas[indiceCidade]
+            #tirar a cidade não visitada que foi adicionada
+            retirado = cidadeNaoVisitadas.remove(cidadeRandomicaNaoVisitada)
             
-            #pegar uma cidade não visitada randomicamente
-            cidadeRandomicaNaoVisitada = cidadeNaoVisitadas[random.randint(0,len(cidadeNaoVisitadas)-1)]
-            #cidadeRandomicaNaoVisitada = 3 #teste do valor amarrado
-            #pegar o valor dos vertices entre essa cidade e as outras duas que estavam ligadas
-            valorVerticePrim = rotasMatriz[i][cidadeRandomicaNaoVisitada]
-            valorVerticeSegun = rotasMatriz[cidadeRandomicaNaoVisitada][i+1]
             
-            #testar para ver se a soma dos vertices novos é menor que o antigo
-            if(valorVerticePrim+valorVerticeSegun<valorVertice):
-                print('É possível de inserir')
-                rotaNova = rota[0:i+1]+[cidadeRandomicaNaoVisitada]+rota[i+1:len(rota)]
+            #adcionar uma nova cidade na posição
+            if(posicao!=len(rota)):
+                #pegar valor do vertice atual
+                rota = rota[0:posicao+1]+[cidadeRandomicaNaoVisitada]+rota[posicao+1:len(rota)]
+
+            else:
+                #pegar o valor do caminho formado entre a ultima cidade com a primeira
+                rota = rota[i+1:len(rota)]+[cidadeRandomicaNaoVisitada]+rota[0]
+                            
+
+        print('Rota final ')
+        print(rota)
+        return rota           
 
 
 
@@ -120,15 +144,16 @@ if __name__=="__main__":
 
     #teste [0,1,2] coloco o 3 entre 0 e 1 [0,3,1,2]
     rotasMatriz = [
-        [0, 900, 100, 300],
-        [900, 0, 200, 450],
-        [100, 200, 0, 400],
-        [300, 450, 400, 0]
+        [0, 100, 500, 150, 250],
+        [100, 0, 400, 200, 350],
+        [500, 400, 0, 150, 10],
+        [150, 200, 150, 0, 50],
+        [250, 350, 10, 50, 0]
     ]
     #gerando uma matriz randomica 
     objetivo = 0
     cv = CaixeiroViajante()
     #cv.algoritmoConstrutivoListaVizinhoMaisProximo(rotasMatriz,objetivo)
-   # print(cv.algoritmoRotaAleatoria(3,rotasMatriz))
+    #print(cv.algoritmoRotaAleatoria(3,rotasMatriz))
     cv.heuristicadaInsercaoMaisBarata(3,rotasMatriz)
     print('fim')
