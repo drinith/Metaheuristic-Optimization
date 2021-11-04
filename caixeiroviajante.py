@@ -13,26 +13,28 @@ from helps.help import matrixGenerateValues as mRan
 class CaixeiroViajante ():
 
     #Cria uma lista de soluções aleatórias com um determinado número de cidades
-    def algoritmoRotaAleatoria(self,qtCidades,rotasMatriz):
+    def algoritmoRotaAleatoria(self,alpha,rotasMatriz):
         
         listaIndicesCidade = list(range(len(rotasMatriz)))#cria uma lista de componentes com os index passados pelo range da Matriz
         rotaRandomica = []#lista de solução
+        tamanhoLCR = int(alpha*len(rotasMatriz))
+        qtCidades = len(rotasMatriz) - tamanhoLCR
 
         for i in range(qtCidades):#for em cima da dimensão da matriz
             #gerar o valor da cidade para a solução aleatoria
-            cidadeRandomica = random.randint(0, len( listaIndicesCidade )-1)
+            cidadeRandomica = listaIndicesCidade[random.randint(0, len( listaIndicesCidade )-1)]
             #adicionar o código da cidade dentro da solução
             rotaRandomica.append(cidadeRandomica)
             #remover o código da cidade para ele não entrar mais na solução
             listaIndicesCidade.remove(cidadeRandomica)
 
-        return rotaRandomica #retorna uma primeira solução possível
+        return rotaRandomica, listaIndicesCidade #retorna uma primeira solução possível e a LCR
 
 
-    def heuristicadaInsercaoMaisBarata (self,qtCidades,rotasMatriz):
+    def heuristicadaInsercaoMaisBarata (self,alpha,rotasMatriz):
 
         #buscando uma rota possível com valores de cidades determinado
-        rota = self.algoritmoRotaAleatoria(qtCidades,rotasMatriz)
+        rotaLC, LCR = self.algoritmoRotaAleatoria(alpha,rotasMatriz)
       
         #teste
         # rota = [0,1,2]
@@ -41,24 +43,25 @@ class CaixeiroViajante ():
         listaIndicesCidade = list(range(len(rotasMatriz)))
         
         #cidades não visitadas
-        cidadeNaoVisitadas = list(set(listaIndicesCidade) - set(rota))
+        #cidadeNaoVisitadas = list(set(listaIndicesCidade) - set(rota))
+        cidadeNaoVisitadas = LCR
         
         print('Rota inicial ')
-        print(rota)
+        print(rotaLC)
 
         #inserir todas as cidades
-        while(len(rota)!=len(rotasMatriz)):
+        while(len(rotaLC)!=len(rotasMatriz)):
             maiorVertice = 0
             #caminhar em cada passo da rota gerada e selecionar o caminho mais pesado e substituir aleatoriamente por uma cidade e religar os caminhos
-            for i in range(len(rota)):
+            for i in range(len(rotaLC)):
             
                 #chegando na última cidade do range olhar o vertice dela com inicio 
-                if(i!=len(rota)-1):
+                if(i!=len(rotaLC)-1):
                     #pegar valor do vertice atual
-                    valorVertice = rotasMatriz[rota[i]][rota[i+1]]
+                    valorVertice = rotasMatriz[rotaLC[i]][rotaLC[i+1]]
                 else:
                     #pegar o valor do caminho formado entre a ultima cidade com a primeira
-                    valorVertice = rotasMatriz[rota[i]][rota[0]] 
+                    valorVertice = rotasMatriz[rotaLC[i]][rotaLC[0]] 
                 #pegar o valor de maior caminho
                 if(maiorVertice < valorVertice):
                     maiorVertice = valorVertice
@@ -72,20 +75,18 @@ class CaixeiroViajante ():
             
             
             #adcionar uma nova cidade na posição
-            if(posicao!=len(rota)):
+            if(posicao!=len(rotaLC)):
                 #pegar valor do vertice atual
-                rota = rota[0:posicao+1]+[cidadeRandomicaNaoVisitada]+rota[posicao+1:len(rota)]
+                rotaLC = rotaLC[0:posicao+1]+[cidadeRandomicaNaoVisitada]+rotaLC[posicao+1:len(rotaLC)]
 
             else:
                 #pegar o valor do caminho formado entre a ultima cidade com a primeira
-                rota = rota[i+1:len(rota)]+[cidadeRandomicaNaoVisitada]+rota[0]
+                rotaLC = rotaLC[i+1:len(rotaLC)]+[cidadeRandomicaNaoVisitada]+rotaLC[0]
                             
 
         print('Rota final ')
-        print(rota)
-        return rota           
-
-
+        print(rotaLC)
+        return rotaLC           
 
 
     #Algoritmo Construtivo Vizinho Mais Proximo
@@ -155,5 +156,5 @@ if __name__=="__main__":
     cv = CaixeiroViajante()
     #cv.algoritmoConstrutivoListaVizinhoMaisProximo(rotasMatriz,objetivo)
     #print(cv.algoritmoRotaAleatoria(3,rotasMatriz))
-    cv.heuristicadaInsercaoMaisBarata(3,rotasMatriz)
+    cv.heuristicadaInsercaoMaisBarata(0.5,rotasMatriz)
     print('fim')
