@@ -20,7 +20,7 @@ class CaixeiroViajante ():
         indice=0
         #pegando a lista de valores  dos custos até aquela cidade
         listaCidadesCusto = tsp[cidadeRandomica]
-        #ordenadno os custos para pegar o menor e o maior
+        #ordenando os custos para pegar o menor e o maior
         listaSort = listaCidadesCusto.copy()
         listaSort.sort()
         #separando o menor custo que sendo 0 o primeiro é zero pois é a posição da cidade para elas mesmo
