@@ -23,7 +23,7 @@ class CaixeiroViajante ():
         #ordenando os custos para pegar o menor e o maior
         listaSort = listaCidadesCusto.copy()
         listaSort.sort()
-        #separando o menor custo que sendo 0 o primeiro é zero pois é a posição da cidade para elas mesmo
+        #separando o menor custo que sendo 0 o primeiro é zero pois é a posição da cidade para ela mesmo
         hmin = listaSort[1]
         #separando o maior que é custo da cidade pra ela mesmo 
         hmax = listaSort[len(tsp)-1]
