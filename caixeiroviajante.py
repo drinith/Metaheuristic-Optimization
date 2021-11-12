@@ -53,16 +53,13 @@ class CaixeiroViajante ():
             #trazendo lista candidata
             LCR = self.listaCandidatoRestrita(cidadeRandomica,alpha,tsp)
             print(LCR)
-            #Tirando da LCR indices das cidades já vizitadas
+            #Tirando da LCR indices das cidades já visitadas
             LCRMenosListaSolucao = list(set(LCR)-set(listaSolucao))
             #Pegando randomicamente um indice de uma cidade da lista das que aparecem na LCR e não foram vizitadas 
             cidadeRandomica = LCRMenosListaSolucao[random.randint(0,len(LCRMenosListaSolucao)-1)]
             listaSolucao.append(cidadeRandomica)
             
-            
-            
-
-
+         
 #teste
 if __name__=="__main__":
     #cidade 1 [1,2,3,0] 3[3,0,2,1] 2[2, 0, 3, 1] 3[3, 0, 2, 1]
