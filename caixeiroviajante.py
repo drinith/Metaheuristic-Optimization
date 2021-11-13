@@ -62,19 +62,18 @@ class CaixeiroViajante ():
          
 #teste
 if __name__=="__main__":
-    #cidade 1 [1,2,3,0] 3[3,0,2,1] 2[2, 0, 3, 1] 3[3, 0, 2, 1]
-
-    #teste [0,1,2] coloco o 3 entre 0 e 1 [0,3,1,2]
+    
+    #Exemplo baseado no livro de Resende, Mauricio GC, and Celso C. Ribeiro. Optimization by GRASP. Springer Science+ Business Media New York, 2016.
     tsp = [
-        [0, 100, 500, 150, 250],
-        [100, 0, 400, 200, 350],
-        [500, 400, 0, 150, 10],
-        [150, 200, 150, 0, 50],
-        [250, 350, 10, 50, 0]
+        [0, 1, 2, 7, 5],
+        [1, 0, 3, 4, 3],
+        [2, 3, 0, 5, 2],
+        [7, 4, 5, 0, 3],
+        [5, 3, 2, 3, 0]
     ]
     #gerando uma matriz randomica 
     objetivo = 0
     cv = CaixeiroViajante()
     #cv.algoritmoConstrutivoListaVizinhoMaisProximo(rotasMatriz,objetivo)
     #print(cv.algoritmoRotaAleatoria(3,rotasMatriz))
-    cv.tspLCR(0.5,tsp)
+    cv.tspLCR(0,tsp)
