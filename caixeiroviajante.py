@@ -125,9 +125,10 @@ if __name__=="__main__":
         [7, 4, 5, 0, 3],
         [5, 3, 2, 3, 0]
     ]
-    #gerando uma matriz randomica 
+    # Gerando randomicamente uma matr
+    # tsp = mRan(1000,1,10)
+    print(tsp)
+    # gerando uma matriz randomica 
     objetivo = 0
     cv = CaixeiroViajante()
-    #cv.algoritmoConstrutivoListaVizinhoMaisProximo(rotasMatriz,objetivo)
-    #print(cv.algoritmoRotaAleatoria(3,rotasMatriz))
     cv.tspLCR(1,tsp)

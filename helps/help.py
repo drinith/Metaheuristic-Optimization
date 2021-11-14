@@ -5,7 +5,7 @@ import random
 #gerador aleatório de matriz
 def matrixGenerateValues(size,min,max):
 
-    matrix = [[0 for i in xrange(size)] for i in xrange(size)]
+    matrix = [[0 for i in range(size)] for i in range(size)]
 
     for r in range (len(matrix)):
         for c in range (len(matrix)):
