@@ -27,9 +27,8 @@ class CaixeiroViajante ():
         hmin = listaSort[1]
         #separando o maior que é custo da cidade pra ela mesmo 
         hmax = listaSort[len(tsp)-1]
-        print(str(hmin) +' e ' +str(hmax))
-        print(hmax+alpha*(hmin-hmax))
-          
+        print("hmin " +str(hmin) +' e ' +"hmax "+ str(hmax))
+                  
         #escolhe os vertices onde hmin<=vertice<=hmax+alpha*(hmin-hmax)
         for cidadeCusto in listaCidadesCusto:
             #hmin<=vertice<=hmax+alpha*(hmin-hmax)
@@ -39,7 +38,7 @@ class CaixeiroViajante ():
             #Caminhando para o indice da próxima cidade
             indice+=1
     
-
+        print(f'Para hmin {hmin} e hmax {hmax} e alpha {alpha} temos a LCR{LCR}')
         return LCR
 
     def tspLCR(self,alpha,tsp):
@@ -49,21 +48,43 @@ class CaixeiroViajante ():
         listaSolucao=[]
         #Cidade que foi escolhida randomicamente sendo colocada na lista de solução
         listaSolucao.append(cidadeRandomica)
-        for i in range(len(tsp)-1):
-            #trazendo lista candidata
-            LCR = self.listaCandidatoRestrita(cidadeRandomica,alpha,tsp)
-            print(LCR)
-            #Tirando da LCR indices das cidades já visitadas
-            LCRMenosListaSolucao = list(set(LCR)-set(listaSolucao))
-            #Pegando randomicamente um indice de uma cidade da lista das que aparecem na LCR e não foram vizitadas 
-            cidadeRandomica = LCRMenosListaSolucao[random.randint(0,len(LCRMenosListaSolucao)-1)]
-            listaSolucao.append(cidadeRandomica)
+        print ('Começando a lista randomica com a cidade '+str(cidadeRandomica))
+        
+        #Dentre as possibilidades me parece que o algoritmo provoca
+        #Uma Infeasible construction como previsto em et al [Mauricio,2016] na página
+        #61        
+        
+        #Enquanto existe uma infeasible construção
+        LCRMenosListaSolucao=[] #lista que serve para verificar solução feasible
+        listaSolucao = []
+        while (LCRMenosListaSolucao==[]):
+        #criação da lista de solução feasible
+            listaSolucao = []
+            # percorrer as cidades e preenchendo a lista feasible
+            for i in range(len(tsp)):
+                #trazendo lista candidata
+                LCR = self.listaCandidatoRestrita(cidadeRandomica,alpha,tsp)
+                print( f"Lista candidata gerada da cidade Randomica {cidadeRandomica} somente com as cidades não visitadas ")
+                #Tirando da LCR indices das cidades já visitadas
+                LCRMenosListaSolucao = list(set(LCR)-set(listaSolucao))
+                #teste de infeasible
+                if(LCRMenosListaSolucao==[]):
+                    print("solução infeasible")
+                    break
+                print(LCRMenosListaSolucao)
+                #Pegando randomicamente um indice de uma cidade da lista das que aparecem na LCR e não foram vizitadas 
+                cidadeRandomica = LCRMenosListaSolucao[random.randint(0,len(LCRMenosListaSolucao)-1)]
+                listaSolucao.append(cidadeRandomica)
+                
+
+        print('Solução fiesible '+str(listaSolucao) )
             
          
 #teste
 if __name__=="__main__":
     
     #Exemplo baseado no livro de Resende, Mauricio GC, and Celso C. Ribeiro. Optimization by GRASP. Springer Science+ Business Media New York, 2016.
+    #somente existe a diferença que aqui estamos usando os indices ou seja lá as cidades são 1,2,3,4,5 , aqui são respectivamente 0,1,2,3,4 
     tsp = [
         [0, 1, 2, 7, 5],
         [1, 0, 3, 4, 3],
@@ -76,4 +97,4 @@ if __name__=="__main__":
     cv = CaixeiroViajante()
     #cv.algoritmoConstrutivoListaVizinhoMaisProximo(rotasMatriz,objetivo)
     #print(cv.algoritmoRotaAleatoria(3,rotasMatriz))
-    cv.tspLCR(0,tsp)
+    cv.tspLCR(0.5,tsp)
