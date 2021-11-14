@@ -77,26 +77,24 @@ class CaixeiroViajante ():
         #escolhe um primeiro elemento aleatório
         cidadeRandomica = random.randint(0,len(tsp)-1)
         listaSolucao=[]
-        #Cidade que foi escolhida randomicamente sendo colocada na lista de solução
+        #cidade que foi escolhida randomicamente sendo colocada na lista de solução
         listaSolucao.append(cidadeRandomica)
         print ('Começando a lista randomica com a cidade '+str(cidadeRandomica))
-        
-        #Dentre as possibilidades me parece que o algoritmo provoca
-        #Uma Infeasible construction como previsto em et al [Mauricio,2016] na página
-        #61        
-        
-       
+
+        # Lista candidata inicial teria todos os indices possíveis   
         LCR =list(range(0, len(tsp)))
-        
        
-        LCRMenosListaSolucao=list(range(0, len(tsp))) #lista que serve para verificar solução feasible
+        # lista candidata sem os indices que já entraram na solução    
+        LCRMenosListaSolucao=list(range(0, len(tsp))) 
         # percorrer as cidades e preenchendo a lista feasible
         for i in range(len(tsp)):
             
             #criar a lista dos não visitados
             LCRMenosListaSolucao = list(set(LCRMenosListaSolucao)-set(listaSolucao))
-         
+
+            #quando não houver mais solução sair do loop
             if(LCRMenosListaSolucao==[]):
+                print('Termino de possíveis caminhos')
                 break
 
 
@@ -112,7 +110,7 @@ class CaixeiroViajante ():
 
                 
 
-        print('Solução fiesible '+str(listaSolucao) )
+        print('Solução possível '+str(listaSolucao) )
             
          
 #teste
@@ -132,4 +130,4 @@ if __name__=="__main__":
     cv = CaixeiroViajante()
     #cv.algoritmoConstrutivoListaVizinhoMaisProximo(rotasMatriz,objetivo)
     #print(cv.algoritmoRotaAleatoria(3,rotasMatriz))
-    cv.tspLCR(0,tsp)
+    cv.tspLCR(1,tsp)
