@@ -38,7 +38,38 @@ class CaixeiroViajante ():
             #Caminhando para o indice da próxima cidade
             indice+=1
     
-        print(f'Para hmin {hmin} e hmax {hmax} e alpha {alpha} temos a LCR{LCR}')
+        print(f'Para hmin {hmin} e hmax {hmax} e alpha {alpha}, partindo da cidade {cidadeRandomica} respeitando o conjunto solução {hmin}<=ci<={hmax+alpha*(hmin-hmax)} temos a LCR{LCR}')
+        return LCR
+
+
+        #Lista candidato restrita
+    def listaCandidatoRestrita(self,cidadeRandomica: int,LCRMenosListaSolucao: list,alpha,tsp):
+        
+        LCR=[]
+        indice=0
+        #pegando a lista de valores  dos custos até aquela cidade menos as cidades já visitadas
+        listaCidadesCusto=[]
+        for cidade in LCRMenosListaSolucao:
+            listaCidadesCusto.append(tsp[cidadeRandomica][cidade])
+        #ordenando os custos para pegar o menor e o maior
+        listaSort = listaCidadesCusto.copy()
+        listaSort.sort()
+        #separando o menor custo que sendo 0 o primeiro é zero pois é a posição da cidade para ela mesmo
+        hmin = listaSort[0]
+        #separando o maior que é custo da cidade pra ela mesmo 
+        hmax = listaSort[len(listaSort)-1]
+        print("hmin " +str(hmin) +' e ' +"hmax "+ str(hmax))
+                  
+        #escolhe os vertices onde hmin<=vertice<=hmax+alpha*(hmin-hmax)
+        for cidade in LCRMenosListaSolucao:
+            #hmin<=vertice<=hmax+alpha*(hmin-hmax)
+            if(hmin<=tsp[cidadeRandomica][cidade] and tsp[cidadeRandomica][cidade]<=(hmax+alpha*(hmin-hmax))):
+                #A lista LCR vai guardar os indices da cidade
+                LCR.append(cidade)
+            #Caminhando para o indice da próxima cidade
+            
+    
+        print(f'Para hmin {hmin} e hmax {hmax} e alpha {alpha}, partindo da cidade {cidadeRandomica} respeitando o conjunto solução {hmin}<=ci<={hmax+alpha*(hmin-hmax)} temos a LCR{LCR}')
         return LCR
 
     def tspLCR(self,alpha,tsp):
@@ -54,27 +85,31 @@ class CaixeiroViajante ():
         #Uma Infeasible construction como previsto em et al [Mauricio,2016] na página
         #61        
         
-        #Enquanto existe uma infeasible construção
-        LCRMenosListaSolucao=[] #lista que serve para verificar solução feasible
-        listaSolucao = []
-        while (LCRMenosListaSolucao==[]):
-        #criação da lista de solução feasible
-            listaSolucao = []
-            # percorrer as cidades e preenchendo a lista feasible
-            for i in range(len(tsp)):
-                #trazendo lista candidata
-                LCR = self.listaCandidatoRestrita(cidadeRandomica,alpha,tsp)
-                print( f"Lista candidata gerada da cidade Randomica {cidadeRandomica} somente com as cidades não visitadas ")
-                #Tirando da LCR indices das cidades já visitadas
-                LCRMenosListaSolucao = list(set(LCR)-set(listaSolucao))
-                #teste de infeasible
-                if(LCRMenosListaSolucao==[]):
-                    print("solução infeasible")
-                    break
-                print(LCRMenosListaSolucao)
-                #Pegando randomicamente um indice de uma cidade da lista das que aparecem na LCR e não foram vizitadas 
-                cidadeRandomica = LCRMenosListaSolucao[random.randint(0,len(LCRMenosListaSolucao)-1)]
-                listaSolucao.append(cidadeRandomica)
+       
+        LCR =list(range(0, len(tsp)))
+        
+       
+        LCRMenosListaSolucao=list(range(0, len(tsp))) #lista que serve para verificar solução feasible
+        # percorrer as cidades e preenchendo a lista feasible
+        for i in range(len(tsp)):
+            
+            #criar a lista dos não visitados
+            LCRMenosListaSolucao = list(set(LCRMenosListaSolucao)-set(listaSolucao))
+         
+            if(LCRMenosListaSolucao==[]):
+                break
+
+
+            #trazendo lista candidata
+            LCR = self.listaCandidatoRestrita(cidadeRandomica,LCRMenosListaSolucao,alpha,tsp)
+            print( f"Lista candidata gerada da cidade Randomica {cidadeRandomica} somente com as cidades não visitadas {LCR} ")
+        
+            
+            #Pegando randomicamente um indice de uma cidade da lista das que aparecem na LCR 
+            cidadeRandomica = LCR[random.randint(0,len(LCR)-1)]
+            print(f'Pegando agora aleatóriamente a cidade {cidadeRandomica} ainda não visitada')
+            listaSolucao.append(cidadeRandomica)
+
                 
 
         print('Solução fiesible '+str(listaSolucao) )
@@ -97,4 +132,4 @@ if __name__=="__main__":
     cv = CaixeiroViajante()
     #cv.algoritmoConstrutivoListaVizinhoMaisProximo(rotasMatriz,objetivo)
     #print(cv.algoritmoRotaAleatoria(3,rotasMatriz))
-    cv.tspLCR(0.5,tsp)
+    cv.tspLCR(0,tsp)
