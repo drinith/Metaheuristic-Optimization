@@ -10,47 +10,56 @@ from helps.help import matrixGenerateValues as mRan
 # de linha com coluna.
 #################################
 
+
 class CaixeiroViajante ():
 
+    tsp=[]
+    alpha=0
     
+
+    def __init__(self,_tsp,_alpha):
+        self.tsp=_tsp
+        self.alpha=_alpha
+
+
     #Lista candidato restrita
-    def listaCandidatoRestrita(self,cidadeRandomica,alpha,tsp):
+    def listaCandidatoRestrita(self,cidadeRandomica):
         
         LCR=[]
         indice=0
         #pegando a lista de valores  dos custos até aquela cidade
-        listaCidadesCusto = tsp[cidadeRandomica]
+        listaCidadesCusto = self.tsp[cidadeRandomica]
         #ordenando os custos para pegar o menor e o maior
         listaSort = listaCidadesCusto.copy()
         listaSort.sort()
         #separando o menor custo que sendo 0 o primeiro é zero pois é a posição da cidade para ela mesmo
         hmin = listaSort[1]
         #separando o maior que é custo da cidade pra ela mesmo 
-        hmax = listaSort[len(tsp)-1]
+        hmax = listaSort[len(self.tsp)-1]
         print("hmin " +str(hmin) +' e ' +"hmax "+ str(hmax))
                   
-        #escolhe os vertices onde hmin<=vertice<=hmax+alpha*(hmin-hmax)
+        #escolhe os vertices onde hmin<=vertice<=hmax+self.alpha*(hmin-hmax)
         for cidadeCusto in listaCidadesCusto:
-            #hmin<=vertice<=hmax+alpha*(hmin-hmax)
-            if(hmin<=cidadeCusto and cidadeCusto<=(hmax+alpha*(hmin-hmax))):
+            #hmin<=vertice<=hmax+self.alpha*(hmin-hmax)
+            if(hmin<=cidadeCusto and cidadeCusto<=(hmax+self.alpha*(hmin-hmax))):
                 #A lista LCR vai guardar os indices da cidade
                 LCR.append(indice)
             #Caminhando para o indice da próxima cidade
             indice+=1
     
-        print(f'Para hmin {hmin} e hmax {hmax} e alpha {alpha}, partindo da cidade {cidadeRandomica} respeitando o conjunto solução {hmin}<=ci<={hmax+alpha*(hmin-hmax)} temos a LCR{LCR}')
+        print(f'Para hmin {hmin} e hmax {hmax} e self.alpha {self.alpha}, partindo da cidade {cidadeRandomica} respeitando o conjunto solução {hmin}<=ci<={hmax+self.alpha*(hmin-hmax)} temos a LCR{LCR}')
         return LCR
 
 
-        #Lista candidato restrita
-    def listaCandidatoRestrita(self,cidadeRandomica: int,LCRMenosListaSolucao: list,alpha,tsp):
+    #Lista candidato restrita
+    def listaCandidatoRestrita(self,cidadeRandomica: int,LCRMenosListaSolucao: list):
         
         LCR=[]
         indice=0
         #pegando a lista de valores  dos custos até aquela cidade menos as cidades já visitadas
         listaCidadesCusto=[]
         for cidade in LCRMenosListaSolucao:
-            listaCidadesCusto.append(tsp[cidadeRandomica][cidade])
+            listaCidadesCusto.append(self.tsp[cidadeRandomica][cidade])
         #ordenando os custos para pegar o menor e o maior
         listaSort = listaCidadesCusto.copy()
         listaSort.sort()
@@ -60,22 +69,23 @@ class CaixeiroViajante ():
         hmax = listaSort[len(listaSort)-1]
         print("hmin " +str(hmin) +' e ' +"hmax "+ str(hmax))
                   
-        #escolhe os vertices onde hmin<=vertice<=hmax+alpha*(hmin-hmax)
+        #escolhe os vertices onde hmin<=vertice<=hmax+self.alpha*(hmin-hmax)
         for cidade in LCRMenosListaSolucao:
-            #hmin<=vertice<=hmax+alpha*(hmin-hmax)
-            if(hmin<=tsp[cidadeRandomica][cidade] and tsp[cidadeRandomica][cidade]<=(hmax+alpha*(hmin-hmax))):
+            #hmin<=vertice<=hmax+self.alpha*(hmin-hmax)
+            if(hmin<=self.tsp[cidadeRandomica][cidade] and self.tsp[cidadeRandomica][cidade]<=(hmax+self.alpha*(hmin-hmax))):
                 #A lista LCR vai guardar os indices da cidade
                 LCR.append(cidade)
             #Caminhando para o indice da próxima cidade
             
     
-        print(f'Para hmin {hmin} e hmax {hmax} e alpha {alpha}, partindo da cidade {cidadeRandomica} respeitando o conjunto solução {hmin}<=ci<={hmax+alpha*(hmin-hmax)} temos a LCR{LCR}')
+        print(f'Para hmin {hmin} e hmax {hmax} e self.alpha {self.alpha}, partindo da cidade {cidadeRandomica} respeitando o conjunto solução {hmin}<=ci<={hmax+self.alpha*(hmin-hmax)} temos a LCR{LCR}')
         return LCR
 
-    def tspLCR(self,alpha,tsp):
+    def tspLCR(self,cidadeRandomica=None):
 
-        #escolhe um primeiro elemento aleatório
-        cidadeRandomica = random.randint(0,len(tsp)-1)
+        if(cidadeRandomica==None):
+            #escolhe um primeiro elemento aleatório
+            cidadeRandomica = random.randint(0,len(self.tsp)-1)
         listaSolucao=[]
         #cidade que foi escolhida randomicamente sendo colocada na lista de solução
         listaSolucao.append(cidadeRandomica)
@@ -99,7 +109,7 @@ class CaixeiroViajante ():
 
 
             #trazendo lista candidata
-            LCR = self.listaCandidatoRestrita(cidadeRandomica,LCRMenosListaSolucao,alpha,tsp)
+            LCR = self.listaCandidatoRestrita(cidadeRandomica,LCRMenosListaSolucao)
             print( f"Lista candidata gerada da cidade Randomica {cidadeRandomica} somente com as cidades não visitadas {LCR} ")
         
             
@@ -108,11 +118,63 @@ class CaixeiroViajante ():
             print(f'Pegando agora aleatóriamente a cidade {cidadeRandomica} ainda não visitada')
             listaSolucao.append(cidadeRandomica)
 
-                
-
-        print('Solução possível '+str(listaSolucao) )
+        #print('Solução possível '+str(listaSolucao) )
+        #returna uma solução possivel 
+        return listaSolucao
+  
             
-         
+    def somaSolucao(self,solucao):
+        soma=0
+        count=0
+        #percorrer cada ponto da solução somando o primeiro com o proximo e no ultimo somar com o primeiro fechando o ciclo
+        for i in range(len(solucao)-1):
+            
+            if(count != len(solucao)):
+                #pegar na matriz tsp os valores como explicado acima
+                soma+=self.tsp[solucao[i]][solucao[i+1]]
+            else:
+                soma+=self.tsp[solucao[0]][solucao[i]]
+
+
+        return soma
+    
+    def melhorSolucao(self,listaSolucao):
+        listaValorSolucao = []
+        #percorrer todas as solucões e criar uma lista de lista com soma da solução e solução
+        for solucao in listaSolucao:
+            listaValorSolucao.append([self.somaSolucao(solucao),solucao])
+       
+        listaValorSolucao.sort()
+        return listaValorSolucao 
+    def buscaLocal(self,solucao):
+       
+        listaNovaSolucaoLocal=[]
+        listaNovaSolucaoLocal.append(solucao)
+        #criar outras soluções trocando a partir do primeiro item o i com i+1
+        for i in range(len(solucao)):
+            for j in range (i+1,len(solucao)):
+                #criar uma copia da solução paa uma nova solução
+                novaSolucao=solucao.copy()
+                #troca duas cidades de posição
+                novaSolucao[i]=solucao[j] 
+                novaSolucao[j]=solucao[i]
+                #adiciona a nova solução para uma lista de soluções
+                listaNovaSolucaoLocal.append(novaSolucao)
+
+        return listaNovaSolucaoLocal
+    def grasp (self):
+        
+        solucaoViavel=self.tspLCR()
+        print(f'Solução Viável {solucaoViavel}')
+        listaSolucoesVizinhas = self.buscaLocal(solucaoViavel)
+        print(f'Lista de soluções vizinhas {listaSolucoesVizinhas} ')
+        melhorLocal = self.melhorSolucao(listaSolucoesVizinhas)[0] 
+        print(melhorLocal)
+
+
+        #primeiro construir uma solucao viável com uma cidade randomica
+
+
 #teste
 if __name__=="__main__":
     
@@ -129,6 +191,8 @@ if __name__=="__main__":
     # tsp = mRan(1000,1,10)
     print(tsp)
     # gerando uma matriz randomica 
-    objetivo = 0
-    cv = CaixeiroViajante()
-    cv.tspLCR(1,tsp)
+
+    cv = CaixeiroViajante(tsp,1)
+    #cv.tspLCR()
+    #cv.buscaLocal([1, 0, 2, 4, 3])
+    cv.grasp()
