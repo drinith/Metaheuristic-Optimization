@@ -20,36 +20,7 @@ class CaixeiroViajante ():
     def __init__(self,_tsp,_alpha):
         self.tsp=_tsp
         self.alpha=_alpha
-
-
-    #Lista candidato restrita
-    def listaCandidatoRestrita(self,cidadeRandomica):
-        
-        LCR=[]
-        indice=0
-        #pegando a lista de valores  dos custos até aquela cidade
-        listaCidadesCusto = self.tsp[cidadeRandomica]
-        #ordenando os custos para pegar o menor e o maior
-        listaSort = listaCidadesCusto.copy()
-        listaSort.sort()
-        #separando o menor custo que sendo 0 o primeiro é zero pois é a posição da cidade para ela mesmo
-        hmin = listaSort[1]
-        #separando o maior que é custo da cidade pra ela mesmo 
-        hmax = listaSort[len(self.tsp)-1]
-        print("hmin " +str(hmin) +' e ' +"hmax "+ str(hmax))
-                  
-        #escolhe os vertices onde hmin<=vertice<=hmax+self.alpha*(hmin-hmax)
-        for cidadeCusto in listaCidadesCusto:
-            #hmin<=vertice<=hmax+self.alpha*(hmin-hmax)
-            if(hmin<=cidadeCusto and cidadeCusto<=(hmax+self.alpha*(hmin-hmax))):
-                #A lista LCR vai guardar os indices da cidade
-                LCR.append(indice)
-            #Caminhando para o indice da próxima cidade
-            indice+=1
-    
-        print(f'Para hmin {hmin} e hmax {hmax} e self.alpha {self.alpha}, partindo da cidade {cidadeRandomica} respeitando o conjunto solução {hmin}<=ci<={hmax+self.alpha*(hmin-hmax)} temos a LCR{LCR}')
-        return LCR
-
+  
 
     #Lista candidato restrita
     def listaCandidatoRestrita(self,cidadeRandomica: int,LCRMenosListaSolucao: list):
@@ -135,7 +106,6 @@ class CaixeiroViajante ():
             else:
                 soma+=self.tsp[solucao[0]][solucao[i]]
 
-
         return soma
     
     def melhorSolucao(self,listaSolucao):
@@ -145,7 +115,9 @@ class CaixeiroViajante ():
             listaValorSolucao.append([self.somaSolucao(solucao),solucao])
        
         listaValorSolucao.sort()
-        return listaValorSolucao 
+        #retornando a melhor solução
+        return listaValorSolucao[0] 
+
     def buscaLocal(self,solucao):
        
         listaNovaSolucaoLocal=[]
@@ -160,17 +132,27 @@ class CaixeiroViajante ():
                 novaSolucao[j]=solucao[i]
                 #adiciona a nova solução para uma lista de soluções
                 listaNovaSolucaoLocal.append(novaSolucao)
-
-        return listaNovaSolucaoLocal
+            
+            #buscar melhor solução local
+            melhorLocal = self.melhorSolucao(listaNovaSolucaoLocal)
+        return melhorLocal
+    
     def grasp (self):
-        
-        solucaoViavel=self.tspLCR()
-        print(f'Solução Viável {solucaoViavel}')
-        listaSolucoesVizinhas = self.buscaLocal(solucaoViavel)
-        print(f'Lista de soluções vizinhas {listaSolucoesVizinhas} ')
-        melhorLocal = self.melhorSolucao(listaSolucoesVizinhas)[0] 
-        print(melhorLocal)
-
+        LCRInicial = list(range(0, len(tsp))) 
+        listaMelhorLocal =[]
+        while (LCRInicial!=[]):
+            
+            cidadeIndiceRandomico = LCRInicial.pop(random.randint(0,len(LCRInicial)-1))
+            
+            solucaoViavel=self.tspLCR(cidadeIndiceRandomico)
+            print(f'Solução Viável {solucaoViavel}')
+            melhorLocal = self.buscaLocal(solucaoViavel)
+            print('====================================================')
+            print(f'Baseado na solução {solucaoViavel} a melhor solução Local {melhorLocal}')
+            listaMelhorLocal.append(melhorLocal)
+            print(melhorLocal)
+        listaMelhorLocal.sort()
+        print(f'Melhor global peso {listaMelhorLocal[0][0]} sendo a solução {listaMelhorLocal[0][1]}')
 
         #primeiro construir uma solucao viável com uma cidade randomica
 
@@ -192,7 +174,7 @@ if __name__=="__main__":
     print(tsp)
     # gerando uma matriz randomica 
 
-    cv = CaixeiroViajante(tsp,1)
+    cv = CaixeiroViajante(tsp,0)
     #cv.tspLCR()
     #cv.buscaLocal([1, 0, 2, 4, 3])
     cv.grasp()
