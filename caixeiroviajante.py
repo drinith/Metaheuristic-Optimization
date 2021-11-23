@@ -22,34 +22,55 @@ class CaixeiroViajante ():
         self.alpha=_alpha
   
 
-    #Lista candidato restrita
-    def listaCandidatoRestrita(self,cidadeRandomica: int,LCRMenosListaSolucao: list):
+    #Construção de uma solução viável 
+    def construtivo(self,cidadeRandomica: int,
+    LCRMenosListaSolucao: list):
         
         LCR=[]
         indice=0
-        #pegando a lista de valores  dos custos até aquela cidade menos as cidades já visitadas
+
+        #inicializando a lista qie conterá os custos do vértices
+        #para aquelas cidades        
         listaCidadesCusto=[]
+        
+        #pegando a lista de valores  dos custos até aquela cidade 
+        #menos as cidades já visitadas
         for cidade in LCRMenosListaSolucao:
-            listaCidadesCusto.append(self.tsp[cidadeRandomica][cidade])
+            listaCidadesCusto.append(self.tsp[cidadeRandomica]
+            [cidade])
+        
         #ordenando os custos para pegar o menor e o maior
         listaSort = listaCidadesCusto.copy()
         listaSort.sort()
-        #separando o menor custo que sendo 0 o primeiro é zero pois é a posição da cidade para ela mesmo
+        
+        #separando o menor custo que está na posição 0 
         hmin = listaSort[0]
-        #separando o maior que é custo da cidade pra ela mesmo 
+        
+        #separando o maior que é o último 
         hmax = listaSort[len(listaSort)-1]
         print("hmin " +str(hmin) +' e ' +"hmax "+ str(hmax))
                   
-        #escolhe os vertices onde hmin<=vertice<=hmax+self.alpha*(hmin-hmax)
+        #escolhe os vertices onde hmin<=vertice<=hmax+
+        #self.alpha*(hmin-hmax)
         for cidade in LCRMenosListaSolucao:
+            
             #hmin<=vertice<=hmax+self.alpha*(hmin-hmax)
-            if(hmin<=self.tsp[cidadeRandomica][cidade] and self.tsp[cidadeRandomica][cidade]<=(hmax+self.alpha*(hmin-hmax))):
-                #A lista LCR vai guardar os indices da cidade
+            if(hmin<=self.tsp[cidadeRandomica][cidade] and 
+            self.tsp[cidadeRandomica][cidade]
+            <=(hmax+self.alpha*(hmin-hmax))):
+                
+                #A lista LCR vai guardar os índices da cidade
                 LCR.append(cidade)
-            #Caminhando para o indice da próxima cidade
+            
+            #Caminhando para o índice da próxima cidade
             
     
-        print(f'Para hmin {hmin} e hmax {hmax} e self.alpha {self.alpha}, partindo da cidade {cidadeRandomica} respeitando o conjunto solução {hmin}<=ci<={hmax+self.alpha*(hmin-hmax)} temos a LCR{LCR}')
+        print(f'Para hmin {hmin} e hmax {hmax} e self.alpha'
+         f'{self.alpha},partindo da cidade {cidadeRandomica}'
+         f'respeitando o conjunto solução {hmin}
+         f'<=ci<={hmax+self.alpha*(hmin-hmax)}'
+         f'temos a LCR{LCR}')
+        
         return LCR
 
     def tspLCR(self,cidadeRandomica=None):
@@ -60,8 +81,9 @@ class CaixeiroViajante ():
         listaSolucao=[]
         #cidade que foi escolhida randomicamente sendo colocada na lista de solução
         listaSolucao.append(cidadeRandomica)
-        print ('Começando a lista randomica com a cidade '+str(cidadeRandomica))
-
+        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n')
+        print (f'Começando a lista randomica com a cidade {cidadeRandomica}\n')
+        print('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\n')
         # Lista candidata inicial teria todos os indices possíveis   
         LCR =list(range(0, len(tsp)))
        
@@ -80,7 +102,7 @@ class CaixeiroViajante ():
 
 
             #trazendo lista candidata
-            LCR = self.listaCandidatoRestrita(cidadeRandomica,LCRMenosListaSolucao)
+            LCR = self.construtivo(cidadeRandomica,LCRMenosListaSolucao)
             print( f"Lista candidata gerada da cidade Randomica {cidadeRandomica} somente com as cidades não visitadas {LCR} ")
         
             
@@ -148,9 +170,10 @@ class CaixeiroViajante ():
             print(f'Solução Viável {solucaoViavel}')
             melhorLocal = self.buscaLocal(solucaoViavel)
             print('====================================================')
-            print(f'Baseado na solução {solucaoViavel} a melhor solução Local {melhorLocal}')
+            print(f'Baseado na solução {solucaoViavel} a melhor solução Local tem peso {melhorLocal[0]} pertencendo a solução vizinha {melhorLocal[1]}')
+            print('====================================================')
             listaMelhorLocal.append(melhorLocal)
-            print(melhorLocal)
+            
         listaMelhorLocal.sort()
         print(f'Melhor global peso {listaMelhorLocal[0][0]} sendo a solução {listaMelhorLocal[0][1]}')
 
