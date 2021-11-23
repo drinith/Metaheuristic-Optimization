@@ -119,11 +119,14 @@ class CaixeiroViajante ():
     def somaSolucao(self,solucao):
         soma=0
         count=0
-        #percorrer cada ponto da solução somando o primeiro com o proximo e no ultimo somar com o primeiro fechando o ciclo
+        #percorrer cada ponto da solução somando o primeiro com 
+        # o proximo e no ultimo somar com o primeiro fechando 
+        # o ciclo
         for i in range(len(solucao)-1):
             
             if(count != len(solucao)):
-                #pegar na matriz tsp os valores como explicado acima
+                #pegar na matriz tsp os valores como explicado 
+                # acima
                 soma+=self.tsp[solucao[i]][solucao[i+1]]
             else:
                 soma+=self.tsp[solucao[0]][solucao[i]]
@@ -132,9 +135,12 @@ class CaixeiroViajante ():
     
     def melhorSolucao(self,listaSolucao):
         listaValorSolucao = []
-        #percorrer todas as solucões e criar uma lista de lista com soma da solução e solução
+        #percorrer todas as solucões e criar uma lista de lista 
+        # com 
+        # soma da solução e solução
         for solucao in listaSolucao:
-            listaValorSolucao.append([self.somaSolucao(solucao),solucao])
+            listaValorSolucao.append([self.somaSolucao(solucao)
+            ,solucao])
        
         listaValorSolucao.sort()
         #retornando a melhor solução
@@ -144,7 +150,8 @@ class CaixeiroViajante ():
        
         listaNovaSolucaoLocal=[]
         listaNovaSolucaoLocal.append(solucao)
-        #criar outras soluções trocando a partir do primeiro item o i com i+1
+        #criar outras soluções trocando a partir do 
+        # primeiro item o i com i+1
         for i in range(len(solucao)):
             for j in range (i+1,len(solucao)):
                 #criar uma copia da solução paa uma nova solução
@@ -160,25 +167,39 @@ class CaixeiroViajante ():
         return melhorLocal
     
     def grasp (self):
+        #Inciando a lista de possíveis candidatos
         LCRInicial = list(range(0, len(tsp))) 
+        #Iniciando lista que conterá todos melhores locais        
         listaMelhorLocal =[]
+        
+        #Manter loop enquanto estiverem possiveis candidatos
         while (LCRInicial!=[]):
             
-            cidadeIndiceRandomico = LCRInicial.pop(random.randint(0,len(LCRInicial)-1))
+            #Pegar um possível candidato randomicamente na lista
+            cidadeIndiceRandomico = LCRInicial.pop(random.randint
+            (0,len(LCRInicial)-1))
             
+            #Trazer uma possível solução através do método
+            #utilizando a lista de candidato restrita
             solucaoViavel=self.tspLCR(cidadeIndiceRandomico)
             print(f'Solução Viável {solucaoViavel}')
+            
+            #Fazendo a busca de vizinhaça local e trazendo
+            #o melhor local daquela vizinhaça
             melhorLocal = self.buscaLocal(solucaoViavel)
             print('====================================================')
             print(f'Baseado na solução {solucaoViavel} a melhor solução Local tem peso {melhorLocal[0]} pertencendo a solução vizinha {melhorLocal[1]}')
             print('====================================================')
-            listaMelhorLocal.append(melhorLocal)
             
+            #guardando o melhor local
+            listaMelhorLocal.append(melhorLocal)
+
+        #organizando lista dos melhores locais     
         listaMelhorLocal.sort()
         print(f'Melhor global peso {listaMelhorLocal[0][0]} sendo a solução {listaMelhorLocal[0][1]}')
 
-        #primeiro construir uma solucao viável com uma cidade randomica
-
+        #retornando peso do melhor global e retornando a melhor solução global
+        return listaMelhorLocal[0][0] , listaMelhorLocal[0][1]
 
 #teste
 if __name__=="__main__":
