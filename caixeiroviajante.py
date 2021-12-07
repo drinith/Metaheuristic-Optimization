@@ -67,7 +67,7 @@ class CaixeiroViajante ():
     
         print(f'Para hmin {hmin} e hmax {hmax} e self.alpha'
          f'{self.alpha},partindo da cidade {cidadeRandomica}'
-         f'respeitando o conjunto solução {hmin}
+         f'respeitando o conjunto solução {hmin}'
          f'<=ci<={hmax+self.alpha*(hmin-hmax)}'
          f'temos a LCR{LCR}')
         
@@ -159,12 +159,26 @@ class CaixeiroViajante ():
                 #troca duas cidades de posição
                 novaSolucao[i]=solucao[j] 
                 novaSolucao[j]=solucao[i]
-                #adiciona a nova solução para uma lista de soluções
+                #adiciona a nova solução para uma lista 
+                # de soluções
                 listaNovaSolucaoLocal.append(novaSolucao)
             
             #buscar melhor solução local
-            melhorLocal = self.melhorSolucao(listaNovaSolucaoLocal)
+            melhorLocal=self.melhorSolucao(listaNovaSolucaoLocal)
         return melhorLocal
+
+    def movimentoAletorioVizinhaca(self,solucao):
+
+        #fazendo uma movimentação aleatótiria para vizinhaça
+        iAleatorio = random.randint(0,len(solucao)-1)
+        jAleatorio = random.randint(0,len(solucao)-1)
+
+        novaSolucao=solucao.copy()
+
+        novaSolucao[iAleatorio]=solucao[jAleatorio] 
+        novaSolucao[jAleatorio]=solucao[iAleatorio]
+            
+        return novaSolucao
     
     def grasp (self):
         #Inciando a lista de possíveis candidatos
@@ -175,8 +189,10 @@ class CaixeiroViajante ():
         #Manter loop enquanto estiverem possiveis candidatos
         while (LCRInicial!=[]):
             
-            #Pegar um possível candidato randomicamente na lista
-            cidadeIndiceRandomico = LCRInicial.pop(random.randint
+            #Pegar um possível candidato randomicamente na 
+            # lista
+            cidadeIndiceRandomico = LCRInicial\
+            .pop(random.randint
             (0,len(LCRInicial)-1))
             
             #Trazer uma possível solução através do método
@@ -187,19 +203,63 @@ class CaixeiroViajante ():
             #Fazendo a busca de vizinhaça local e trazendo
             #o melhor local daquela vizinhaça
             melhorLocal = self.buscaLocal(solucaoViavel)
-            print('====================================================')
-            print(f'Baseado na solução {solucaoViavel} a melhor solução Local tem peso {melhorLocal[0]} pertencendo a solução vizinha {melhorLocal[1]}')
-            print('====================================================')
+            print('===================================='
+            f'================')
+            print(f'Baseado na solução {solucaoViavel} '
+            f'a melhor solução Local tem peso {melhorLocal[0]} '
+            f'pertencendo a solução vizinha {melhorLocal[1]}')
+            print('=========================================='
+            f'==========')
             
             #guardando o melhor local
             listaMelhorLocal.append(melhorLocal)
 
         #organizando lista dos melhores locais     
         listaMelhorLocal.sort()
-        print(f'Melhor global peso {listaMelhorLocal[0][0]} sendo a solução {listaMelhorLocal[0][1]}')
+        print(f'Melhor global peso {listaMelhorLocal[0][0]}' 
+        f'sendo a solução {listaMelhorLocal[0][1]}')
 
         #retornando peso do melhor global e retornando a melhor solução global
         return listaMelhorLocal[0][0] , listaMelhorLocal[0][1]
+
+    def sa (self,asMax, Tmax, t0, alpha ):
+
+        #Gerar uma solução inicial *** FAzer aleatoria depois
+        solucao = self.tspLCR(random.randint(0,len(tsp)-1))
+        #inicializa iter e tInit
+        iter = 0
+        tInit = t0
+        #inicializando solução global
+        solucaoGlobal = list(range(0, len(tsp)))
+        #Enquanto t menor que temperatura final
+        while(tInit<Tmax):
+            #Loop referente ao asMax estabelecidado
+            while (iter<asMax):
+
+                iter+=1
+                #soluçãoII é uma solução vinda de uma movimento aleatório na vizinhaça
+                solucaoII = self.movimentoAletorioVizinhaca(solucao)
+                # delta é gerado através da função objetivo relativo as soluções
+                delta = self.somaSolucao(solucao)-self.somaSolucao(solucaoII)
+
+                print(delta)
+
+                #Caso delta positivo significa que solução inicial ainda é melhro que movimento
+                if(delta>=0):
+                    
+                    #sendo delta maior igual a zero, significa que soluçãoII é menor que solução 
+                    solucao = solucaoII
+                        
+                        #teste para ver se a solução é melhor que a global
+                        if(self.somaSolucao(solucao)<self.somaSolucao(global)):
+
+                            solucaoGlobal = solucao
+                else:
+                    
+
+
+
+
 
 #teste
 if __name__=="__main__":
@@ -221,4 +281,5 @@ if __name__=="__main__":
     cv = CaixeiroViajante(tsp,0)
     #cv.tspLCR()
     #cv.buscaLocal([1, 0, 2, 4, 3])
-    cv.grasp()
+    #cv.grasp()
+    cv.sa(10,10,0,0.2)
