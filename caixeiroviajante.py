@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import random
 from helps.help import matrixGenerateValues as mRan
+from math import e
 
 ##################################
 # Problema do caixeiro viajante usando metaheuristica. Neste Problema
@@ -222,17 +223,17 @@ class CaixeiroViajante ():
         #retornando peso do melhor global e retornando a melhor solução global
         return listaMelhorLocal[0][0] , listaMelhorLocal[0][1]
 
-    def sa (self,asMax, Tmax, t0, alpha ):
+    def sa (self,asMax, T, t0, alpha ):
 
         #Gerar uma solução inicial *** FAzer aleatoria depois
         solucao = self.tspLCR(random.randint(0,len(tsp)-1))
         #inicializa iter e tInit
         iter = 0
-        tInit = t0
+        t = t0
         #inicializando solução global
         solucaoGlobal = list(range(0, len(tsp)))
         #Enquanto t menor que temperatura final
-        while(tInit<Tmax):
+        while(t>T):
             #Loop referente ao asMax estabelecidado
             while (iter<asMax):
 
@@ -251,13 +252,21 @@ class CaixeiroViajante ():
                     solucao = solucaoII
                         
                         #teste para ver se a solução é melhor que a global
-                        if(self.somaSolucao(solucao)<self.somaSolucao(global)):
+                    if(self.somaSolucao(solucao)<self.somaSolucao(solucaoGlobal)):
 
-                            solucaoGlobal = solucao
+                        solucaoGlobal = solucao
                 else:
-                    
+
+                    if(random.random()<e**(-delta/t)):
+                        solucao=solucaoII
 
 
+            t=alpha*t
+            iter=0
+        
+        print(f'Melhor solução encontrada usando Simulated Annealing {solucaoGlobal} tendo o custo de {self.somaSolucao(solucaoGlobal)}')
+
+        return solucaoGlobal
 
 
 
@@ -282,4 +291,4 @@ if __name__=="__main__":
     #cv.tspLCR()
     #cv.buscaLocal([1, 0, 2, 4, 3])
     #cv.grasp()
-    cv.sa(10,10,0,0.2)
+    print(cv.sa(10,0.5,10,0.2))
