@@ -16,6 +16,7 @@ class CaixeiroViajante ():
 
     tsp=[]
     alpha=0
+    tabuList=[]
     
 
     def __init__(self,_tsp,_alpha):
@@ -116,7 +117,24 @@ class CaixeiroViajante ():
         #returna uma solução possivel 
         return listaSolucao
   
-            
+    def pegaVizinhaca(self,solucao):
+        listaNovaSolucaoLocal=[]
+        listaNovaSolucaoLocal.append(solucao)
+        #criar outras soluções trocando a partir do 
+        # primeiro item o i com i+1
+        for i in range(len(solucao)):
+            for j in range (i+1,len(solucao)):
+                #criar uma copia da solução paa uma nova solução
+                novaSolucao=solucao.copy()
+                #troca duas cidades de posição
+                novaSolucao[i]=solucao[j] 
+                novaSolucao[j]=solucao[i]
+                #adiciona a nova solução para uma lista 
+                # de soluções
+                listaNovaSolucaoLocal.append(novaSolucao)
+        return listaNovaSolucaoLocal
+
+
     def somaSolucao(self,solucao):
         soma=0
         count=0
@@ -268,6 +286,49 @@ class CaixeiroViajante ():
 
         return solucaoGlobal
 
+    # def inTabulits(solucao):
+
+    #     if(self.tabuList(solucao)>=0):
+    #         return true
+
+
+
+    def tabuSeach(self,s0:list,stoppingCriteria,maxTabuSize):
+        #
+        sE= s0.copy()
+        sB= s0.copy()
+        self.tabuList = []
+        self.tabuList.append(s0)
+        count = 0
+        #Criterio de parada
+        while(stoppingCriteria!=count):
+            sVizinhaca = self.pegaVizinhaca(sB)
+            sB = sVizinhaca[0]
+
+            for sCandidato in sVizinhaca:
+                print(sCandidato in self.tabuList)
+                print(f'soma sCandidato {self.somaSolucao(sCandidato)} e {self.somaSolucao(sB)}')
+                #Testar se o elemento existe na tabulist e se função objetivo é melhor ou não
+                if(False==(sCandidato in self.tabuList) and self.somaSolucao(sCandidato)<self.somaSolucao(sB) ):
+                    print("Candidato não está na lista tabu e é melhor")
+                    sB=sCandidato
+                
+                #Atualiza o s* (melhor global) com o valor de s barra
+                sE = sB
+
+                #coloca s barra na tabu list    
+                self.tabuList.append(sB)
+
+                #Se tabulist passar de um maximo tamanho estipulado retire um item dela
+                if(len(self.tabuList)>maxTabuSize):
+                    self.tabuList.pop(0)
+            count+=1
+
+        return sE
+
+
+
+
 
 
 #teste
@@ -291,4 +352,5 @@ if __name__=="__main__":
     #cv.tspLCR()
     #cv.buscaLocal([1, 0, 2, 4, 3])
     #cv.grasp()
-    print(cv.sa(10,0.5,10,0.2))
+    #print(cv.sa(10,0.5,10,0.2))
+    print(cv.tabuSeach([2,1,0, 3, 4],12,5))
